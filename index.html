@@ -92,6 +92,12 @@ dialog{padding:0;border:1px solid #c9d6c0;border-radius:24px;max-height:90dvh;wi
 .body-word{position:relative;min-width:78px;min-height:58px;display:grid;place-items:center;gap:1px;padding:3px 16px 3px 8px;background:#fffbec;border:1px solid #bdcfb9;border-radius:11px;line-height:1.25}
 .body-word span{font-size:12px;color:#325d49}.body-word b{font-size:18px}.body-word small{position:absolute;right:5px;bottom:5px;color:#487d60}
 .body-word:hover{background:#e3f3d7}
+.class-done textarea[readonly]{display:block;width:min(100%,720px);min-height:9em;margin-top:10px;font:inherit}
+@media print{
+ body.printing-body-passport>:not(#classroom),body.printing-body-passport #classroom .classroom-header,body.printing-body-passport #classroom .classroom-rail,body.printing-body-passport #classroom .class-done button,body.printing-body-passport #classroom .body-audio-status,body.printing-body-passport #classroom textarea{display:none!important}
+ body.printing-body-passport #classroom,body.printing-body-passport #classroom .classroom-content,body.printing-body-passport #classroom .classroom-stage{position:static!important;display:block!important;inset:auto!important;width:100%!important;height:auto!important;overflow:visible!important;margin:0!important;border:0!important;background:#fff!important}
+ body.printing-body-passport #classroom::backdrop{display:none!important}
+}
 .primary-path{margin-top:clamp(3rem,7vw,6rem);scroll-margin-top:6rem}
 .primary-path .section-heading{margin-bottom:1.35rem}
 .primary-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.5rem;margin-bottom:.75rem}
@@ -525,6 +531,33 @@ const fullCourses = {
 
   function handleBodyAction(action,value) {
     if(lesson.id!=="body") return false;
+    if(action==="body-copy") {
+      const card=stage.querySelector(".class-done");
+      const text=card.innerText;
+      const status=stage.querySelector("#body-audio-status");
+      const fallback=()=>{
+        if(!card.isConnected || card.querySelector("textarea")) return;
+        const copy=document.createElement("textarea");
+        copy.setAttribute("aria-label","探险护照文本");
+        copy.readOnly=true;
+        copy.value=text;
+        card.append(copy);
+        copy.select();
+        if(status) status.textContent="已选中护照，可以手动复制。";
+      };
+      if(navigator.clipboard?.writeText) navigator.clipboard.writeText(text).then(()=>{
+        if(status) status.textContent="探险护照已复制。";
+      },fallback);
+      else fallback();
+      return true;
+    }
+    if(action==="body-print") {
+      stopBodyAudio();
+      document.body.classList.add("printing-body-passport");
+      window.addEventListener("afterprint",()=>document.body.classList.remove("printing-body-passport"),{once:true});
+      window.print();
+      return true;
+    }
     if(action==="body-audio") {playBodyAudio(value);return true;}
     if(action==="body-stop") {
       stopBodyAudio();
@@ -632,7 +665,7 @@ const fullCourses = {
         (record.route===null?"":'<p>本次阅读路线 · '+safe(course.steps.find(s=>s.routes).routes[record.route][0])+'</p>') +
         '<dl>' + (last.fields||[]).map(([label],i)=>'<div><dt>'+safe(label)+'</dt><dd>'+safe(notes[i]?.trim() || (record.work.at(-1)?.oral ? "已选择口头表达" : "未填写"))+'</dd></div>').join("") + '</dl>' +
         (lesson.id==="body"?'<p>已完成领读、配对、找字和路线挑战。</p>'+bodyAudioButton("听结课祝贺","finish")+'<p class="body-audio-status" id="body-audio-status" role="status"></p>':"") +
-        '<div class="class-step-actions">' + button("下载学习成果","export","","primary") + button("回看最后一站","jump",course.steps.length-1) + button("重新开始","restart") + '</div></div>';
+        '<div class="class-step-actions">' + (lesson.id==="body"?button("复制探险护照","body-copy","","primary")+button("打印护照","body-print"):button("下载学习成果","export","","primary")) + button("回看最后一站","jump",course.steps.length-1) + button("重新开始","restart") + '</div></div>';
       return;
     }
     const step = activeStep();
