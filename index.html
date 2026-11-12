@@ -72,7 +72,40 @@ dialog{padding:0;border:1px solid #c9d6c0;border-radius:24px;max-height:90dvh;wi
  .classroom-pane{flex:1;min-height:0}.classroom-stage{padding:13px 12px 20px}.class-step-head>p:last-child{margin-bottom:9px}.class-reading{padding:8px 11px}.class-cards,.class-slots{grid-template-columns:repeat(2,minmax(0,1fr))}.class-routes{grid-template-columns:1fr}.class-routes .class-card{min-height:65px}.class-card{min-height:64px}.class-match>div{padding:6px}.class-picture{max-height:200px}
 }
 @media(max-width:430px){.nav-shell{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;padding-block:7px}.nav-shell nav{width:100%;display:flex;justify-content:space-between;gap:5px;white-space:nowrap}.nav-shell nav a{font-size:11px;white-space:nowrap}.nav-shell nav a:nth-child(2){display:inline}.nav-shell .brand{flex:none}.nav-shell .nav-cta{display:none}}
-</style>
+
+.primary-path{margin-top:clamp(3rem,7vw,6rem);scroll-margin-top:6rem}
+.primary-path .section-heading{margin-bottom:1.35rem}
+.primary-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.5rem;margin-bottom:.75rem}
+.primary-tabs button{appearance:none;border:1px solid #cbd4c6;background:#f8f8f0;color:#203d2e;border-radius:14px;text-align:left;padding:.75rem;min-height:76px;cursor:pointer}
+.primary-tabs button strong,.primary-tabs button span{display:block}
+.primary-tabs button span{margin-top:.2rem;font-size:.8rem}
+.primary-tabs button[aria-selected=true]{background:#224f3a;border-color:#224f3a;color:#fffef7}
+.primary-panel{--plan-tone:#e6edda;--plan-border:#d4dccd;border:1px solid var(--plan-border);background:#fbfbf4;border-radius:24px;overflow:hidden}
+.primary-panel[data-primary-level=l3]{--plan-tone:#e1ecea;--plan-border:#ceded9}
+.primary-panel[data-primary-level=l4]{--plan-tone:#efe6d9;--plan-border:#e2d4c2}
+.primary-summary{background:var(--plan-tone);padding:clamp(1.1rem,3.7vw,2.8rem);display:grid;grid-template-columns:1.6fr 1fr;gap:clamp(1.2rem,4vw,3.3rem);align-items:center}
+.primary-level,.primary-origin{font-size:.83rem;font-weight:750;color:#375843}
+.primary-summary h3{font-size:clamp(1.65rem,4vw,3.15rem);line-height:1.15;margin:.25rem 0 .7rem}
+.primary-summary p,.primary-body p,.primary-body dd{margin:0;line-height:1.65}
+.primary-next{padding:1rem;border:1px solid var(--plan-border);background:#ffffff58;border-radius:14px}
+.primary-body{display:grid;grid-template-columns:1.55fr 1fr;gap:clamp(1.2rem,4vw,3.3rem);padding:clamp(1.1rem,3.7vw,2.8rem)}
+.primary-summary h4,.primary-body h4{margin:0 0 .45rem;font-size:1rem}
+.primary-body p+ p{margin:.35rem 0 .75rem}
+.primary-body details{border:1px solid var(--plan-border);border-radius:12px;margin:.55rem 0;background:#fffefa}
+.primary-body summary{cursor:pointer;font-size:.92rem;font-weight:700;padding:.72rem .85rem}
+.primary-body ol{padding:.15rem 1.1rem .25rem 2rem;margin:.2rem 0}
+.primary-body li{padding:.36rem 0;border-top:1px solid #e6e9e0;font-size:.89rem}
+.primary-body li span{display:block;margin-top:.18rem}
+.primary-evidence dl{margin:.1rem 0 1rem}
+.primary-evidence dl>div{border-bottom:1px solid var(--plan-border);padding:.55rem 0}
+.primary-evidence dt{font-weight:750;font-size:.88rem}
+.primary-evidence dd{font-size:.87rem}
+.primary-links{display:flex;flex-wrap:wrap;gap:.4rem}
+.primary-links .pill{font-size:.82rem;min-height:42px;padding:.45rem .72rem}
+.primary-entry{display:block;width:fit-content;margin-top:.7rem;font-weight:750;text-underline-offset:.22em;color:inherit}
+.primary-stage-entry{margin-left:1rem;font-size:.9rem;font-weight:750;text-underline-offset:.2em}
+@media(max-width:780px){.primary-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}.primary-summary,.primary-body{grid-template-columns:1fr}}
+@media(max-width:430px){.primary-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.primary-stage-entry{display:block;margin:.5rem 0}}</style>
 </head>
 <body>
 <a class="skip" href="#main">跳到主要内容</a>
@@ -96,8 +129,13 @@ dialog{padding:0;border:1px solid #c9d6c0;border-radius:24px;max-height:90dvh;wi
 <div class="age-panel" id="age-panel" role="tabpanel" tabindex="0"></div>
 <p class="micro age-note">3–4 岁示例取材于原有自然阅读资料，5–6 岁示例取自悦读森林 L2 课程。实际选书和任务可根据孩子的兴趣、语言表达与阅读经验调整。</p>
 </div></section>
-<section id="path" class="wrap section-pad"><div class="section-heading"><div><p class="eyebrow"><span></span> 3–12 岁分级</p><h2>从听，到读、思、创。</h2></div><p>家长从一起玩、陪着练，到做讨论伙伴。孩子逐渐接过选书、阅读和表达的主动权。</p></div>
-<div class="path-cards" id="path-cards"></div><div id="path-detail" class="path-detail" aria-live="polite"></div>
+<section id="path" class="wrap section-pad"><div class="section-heading"><div><p class="eyebrow"><span></span> 3–12 岁分级</p><h2>从听，到读、思、创。</h2></div><p>先一起看图讲故事，6 岁在悦读先锋营完成幼小衔接。再把自主阅读延伸到整本书、主题探究和研究表达。</p></div>
+<div class="path-cards" id="path-cards"></div><div id="path-detail" class="path-detail" aria-live="polite"></div><section class="primary-path" id="primary-path" aria-labelledby="primary-title">
+  <div class="section-heading"><div><p class="eyebrow"><span></span> 幼小衔接到小学阶段</p><h2 id="primary-title">6–12 岁课程规划</h2></div><p>6 岁开始练习自己读。入学后，孩子把在短段落里找到线索的办法，用到整本书、主题阅读和自己的研究里。选择一个年龄，展开课程与阶段目标。</p></div>
+  <div class="primary-tabs" id="primary-tabs" role="tablist" aria-label="小学阶段课程规划"></div>
+  <div class="primary-panel" id="primary-panel" role="tabpanel" tabindex="0"></div>
+  <p class="micro age-note">年龄为选课参考，老师按孩子当前的阅读表现安排起点。L3、L4 为课程规划，相关已上线案例可直接体验。</p>
+</section>
 </section>
 <section id="lessons" class="lesson-section"><div class="wrap section-pad">
 <div class="section-heading"><div><p class="eyebrow"><span></span> 完整课堂与原始课件</p><h2>从第一站上到最后一站。</h2></div><p>可完整跟课，也可查看原课件和教师资料。《部首咒语》和《蚂蚁》直接进入原版互动课堂。</p></div>
@@ -582,6 +620,7 @@ function renderAge(index, focus = false) {
   const badge = '<span class="age-kind"><span aria-hidden="true">' + ageIcon + '</span>' + ageKind + '</span>';
   const visual = age.picture ? '<div class="age-picture"><img src="' + window.classroomImages[age.picture] + '" alt="' + age.alt + '"></div>' : '<div class="age-picture age-book-art"><div class="book-shape"><span>桥梁书 · 注音版</span><b>一年级大个子<br>二年级小个子</b></div></div>';
   panel.innerHTML = '<div class="age-story">' + badge + '<p class="eyebrow">' + age.level + '</p><h3>' + age.title + '</h3><p class="age-case">' + age.task + '<small>' + age.prompt + '</small></p>' + visual + '<button class="pill primary age-experience" id="age-experience">开始完整课 →</button></div><div class="age-content">' + markup(age.details) + '</div>';
+  if (age.age===6) $("age-experience").insertAdjacentHTML("afterend",'<a class="primary-entry" href="#primary-path" data-primary-entry>看 6 岁幼小衔接及后续课程 ↓</a>');
   $("age-experience").addEventListener("click", () => openLesson(lessons.find(lesson=>lesson.id===age.caseId)));
   if(focus) $("age-tab-" + index).focus();
 }
@@ -605,6 +644,7 @@ function renderStage(index, focus = false) {
   $("path-detail").innerHTML = markup([["阅读与选书",stage[4]],["线上、线下与家长",stage[5]],["看得见的进步",stage[6]]]);
   const sample = lessons.find(item=>item.id===stageCaseIds[index]);
   $("path-detail").insertAdjacentHTML("beforeend",'<button class="path-link" data-path-case="' + sample.id + '">体验代表课 · ' + sample.title + ' ↗</button>');
+  if (index>0) $("path-detail").insertAdjacentHTML("beforeend",'<a class="primary-stage-entry" href="#primary-path" data-primary-start="'+[0,0,1,3][index]+'">看阶段目标与课程安排 ↓</a>');
   if(focus) $("path-cards").children[index].focus();
 }
 $("path-cards").addEventListener("click",event=>{
@@ -678,4 +718,130 @@ $("report-actions").addEventListener("click",event=>{
 renderReport(1);
 
 </script>
+<script>const primaryPlans = [
+  {
+    age:"6–7 岁", level:"L2 · 悦读先锋营", title:"从陪读到自己读",
+    goal:"熟悉上课、静读和求助的方式。遇到陌生字，先借图、拼音或前后句试读，再回到文字里找线索，用一句话说清发现。",
+    carry:"把自己读完的一小段和找到的一处线索，带进小学的整本书阅读。",
+    origin:"原 L2 课程方案 · 12 周、24 讲、12 本（套）书",
+    format:"一书一周。线上 50 分钟课沿用亮灯、精读、静读、实战、成长档案的 4+1 结构，线下可用 120 分钟小班课深化。",
+    tracks:[
+      {title:"第 1–4 周 · 规则、情绪与识字", units:[
+        ["《大卫上学去》","读懂校园场景里的规则，和同伴演一遍进教室。"],
+        ["《三个小小人分级阅读》第 2 级","用部首线索猜字，再回到原句检验。"],
+        ["《小阿力的大学校》","从人物的话和动作找情绪线索，练习开口求助。"],
+        ["《我有友情要出租》","读懂人物怎样交朋友，说一件自己愿意尝试的事。"]]},
+      {title:"第 5–8 周 · 从图文到长一点的故事",units:[
+        ["《林汉达成语故事》","从人物的行为和结果解释一个成语。"],
+        ["《古诗带你去探秘》","抓住诗中的意象，选一处画面用自己的话讲出来。"],
+        ["《爷爷一定有办法》","把前后画面连成因果链，再用一句话复述。"],
+        ["《美猴王系列丛书》","给较长故事画一张人物与事件图，分段接着读。"]]},
+      {title:"第 9–12 周 · 静读、找线索、说理由",units:[
+        ["《神奇校车》","读身体主题科普片段，分类整理信息。"],
+        ["《妙想科学》","找出能解释一个科学现象的线索。"],
+        ["《一年级大个子二年级小个子》","按阅读起点选择静读路线，用人物行动解释判断。"],
+        ["《没头脑和不高兴》","找出行为和后果的联系，完成一张阅读发现卡。"]]}
+    ],
+    evidence:[["知 · 认识线索","能用部首、拼音或上下文试读，并回到句中核对。"],["行 · 读完并说明","独立读完适配短段，指出一句依据。"],["信 · 开始自己读","能完成亮灯准备，卡住时主动试读或求助。"]],
+    links:[["radical","体验《部首咒语》"],["body","体验《身体工厂》"],["mountain","体验《文字登山队》"]]
+  },
+  {
+    age:"7–8 岁",level:"L3 · 思考者书屋",title:"从一小段到一本书",
+    goal:"能给一本书分段阅读，用目录、章节标题和关键词找回信息。读完能讲清人物、事件和结果。",
+    carry:"保留能定位到章节的记录，下一阶段用它们解释原因和比较不同材料。",
+    origin:"课程规划 · L3 上段",
+    format:"用故事书、桥梁书和图文科普并行练习。每次日课留下一个词或一个问题，课上带着记录复述、交流。",
+    tracks:[
+      {title:"单元一 · 章节接力",units:[["给整本书做阅读地图","用目录划分进度，写一张「上次读到哪里」续读条。"],["把故事讲完整","找出开端、转折、结果，带着一处章节线索复述。"]]},
+      {title:"单元二 · 科普信息整理",units:[["《真实的大自然·蚂蚁》","从图注和段落里找身体、气味与分工信息。"],["做一张蚁巢地图","用路线和角色解释发现，把书上信息与自己的观察分开。"]]}
+    ],
+    evidence:[["知 · 会用章节","会借目录、标题和图注定位。"],["行 · 能讲清一本书","用事件图复述主线，并指出信息在哪一章。"],["信 · 愿意接着读","能做简单计划，隔一天接回上次的阅读。"]],
+    links:[["ant","体验《蚂蚁》原版课"]]
+  },
+  {
+    age:"8–9 岁",level:"L3 · 思考者书屋",title:"带着一个问题回到书里",
+    goal:"从复述事实进到解释关系。能提出可查找的问题，用两处图文信息串起顺序、因果或结构与功能。",
+    carry:"把问题、出处和解释保留在同一张记录卡上，为跨材料比较打基础。",
+    origin:"课程规划 · L3 下段，参考昆虫王国原营地总纲",
+    format:"日课读一段、记一个疑问。课堂完成观察、查证、解释和同伴追问，用同一问题串起几个读物。",
+    tracks:[
+      {title:"单元一 · 读清楚一个过程",units:[["《蝉》《蝴蝶》","分别找关键图文节点，画两条生命过程线，再比较。"],["从画面到解释","指着证据卡说出「先……接着……我这样判断因为……」。"]]},
+      {title:"单元二 · 用证据回答为什么",units:[["《蚂蚁》《蜜蜂》","比较两种昆虫怎样分工，各挑一条直接回答问题的资料。"],["我的自然博物馆","整理观察卡、过程图和来源，试着回答同伴的一次追问。"]]}
+    ],
+    evidence:[["知 · 能分辨信息","知道一条信息是事实、观察还是自己的推测。"],["行 · 能把理由串起来","用两处可定位的资料回答一个问题。"],["信 · 愿意追问","同伴提出新疑问时，愿意翻回书里补证据。"]],
+    links:[["ant","体验自然观察课"],["research","看看下一阶段的发布任务"]]
+  },
+  {
+    age:"9–10 岁",level:"L4 · 少年智行营",title:"围绕同一问题读不同材料",
+    goal:"能从至少两份材料筛选相关信息，说明哪里相同、哪里不同，并交代材料出处。",
+    carry:"把比较表里的证据变成自己的初步判断，下一阶段再用反例和反馈修订。",
+    origin:"课程规划 · L4 上段，由原营地发布会延展",
+    format:"用科普图书、观察记录和短文做材料包。线上标注、做比较表，线下把发现讲给同伴听。",
+    tracks:[
+      {title:"单元一 · 建立比较的标准",units:[["给昆虫定一个共同问题","围绕「怎样长大」「怎样寻找食物」选一问，列出可对照的项目。"],["两份材料一张表","写出共同点和不同点，并标注书名和页码。"]]},
+      {title:"单元二 · 回应听众的疑问",units:[["昆虫王国发布会","用一张有出处的发现卡讲清问题、依据和自己的解释。"],["同伴追问","回答「你的证据在哪里」，回去补一条有用的资料。"]]}
+    ],
+    evidence:[["知 · 会认来源","能记录书名、页码或材料名称。"],["行 · 能比较和解释","用同一标准比较两份材料，说出差异对判断有什么影响。"],["信 · 愿意修正","被追问后主动补查，而后调整自己的说法。"]],
+    links:[["research","体验《昆虫王国发布会》"]]
+  },
+  {
+    age:"10–12 岁",level:"L4 · 少年智行营",title:"用阅读完成自己的研究",
+    goal:"能把兴趣变成一个具体问题，综合阅读、观察或访谈的证据形成观点，并交代结论适用的范围。",
+    carry:"带走一份有来源、有修订记录的作品，也带走一个还想继续研究的问题。",
+    origin:"课程规划 · L4 下段",
+    format:"专题项目。自己定问题、建来源清单，在读书会或工作坊里交换草稿，最后发布修订后的作品。",
+    tracks:[
+      {title:"单元一 · 选题与查证",units:[["从题目缩到一个问题","例如「校园里常见的昆虫在什么地方出现？」确定观察范围。"],["给证据做出处卡","把科普书、实地记录和访谈并排，写出各自能说明什么。"]]},
+      {title:"单元二 · 写作、互评与发布",units:[["写一页研究报告","按问题、证据、判断、待查四部分组织，并回应一条不同意见。"],["用反馈修订","公开讲解一项发现，保留初稿与改稿，让读者看见观点如何变化。"]]}
+    ],
+    evidence:[["知 · 会判断材料","能说明来源的用途和限制。"],["行 · 能完成可查证的作品","有清楚的主张、证据出处与仍待验证的问题。"],["信 · 能持续研究","能根据反馈修订作品，并提出下一步计划。"]],
+    links:[["research","体验研究发布的入门任务"]]
+  }
+];</script>
+<script>(() => {
+  const navigation = document.getElementById("primary-tabs");
+  const panel = document.getElementById("primary-panel");
+  let selected = 0;
+
+  function render(index, focus = false) {
+    selected = index;
+    const plan = primaryPlans[index];
+    navigation.innerHTML = primaryPlans.map((item,i) =>
+      '<button type="button" role="tab" id="primary-tab-'+i+'" aria-controls="primary-panel" aria-selected="'+(i===index)+'" tabindex="'+(i===index?0:-1)+'" data-primary-index="'+i+'"><strong>'+item.age+'</strong><span>'+item.title+'</span></button>'
+    ).join("");
+    panel.dataset.primaryLevel = index<1 ? "l2" : index<3 ? "l3" : "l4";
+    panel.setAttribute("aria-labelledby","primary-tab-"+index);
+    panel.innerHTML =
+      '<div class="primary-summary"><div><p class="primary-level">'+plan.level+'</p><h3>'+plan.title+'</h3><p>'+plan.goal+'</p></div>'+
+      '<div class="primary-next"><h4>'+ (index===primaryPlans.length-1 ? '结课带走什么' : '怎样进入下一阶段') +'</h4><p>'+plan.carry+'</p></div></div>'+
+      '<div class="primary-body"><div><h4>课程安排</h4><p class="primary-origin">'+plan.origin+'</p><p>'+plan.format+'</p>'+
+      plan.tracks.map((track,i)=>'<details'+(i===0?' open':'')+'><summary>'+track.title+'</summary><ol>'+track.units.map(([title,action])=>'<li><strong>'+title+'</strong><span>'+action+'</span></li>').join("")+'</ol></details>').join("")+
+      '</div><div class="primary-evidence"><h4>怎样看见进步</h4><dl>'+plan.evidence.map(([label,description])=>'<div><dt>'+label+'</dt><dd>'+description+'</dd></div>').join("")+
+      '</dl><h4>体验相关课堂</h4><div class="primary-links">'+plan.links.map(([id,label])=>'<button type="button" class="pill secondary" data-primary-case="'+id+'">'+label+' <span aria-hidden="true">↗</span></button>').join("")+'</div></div></div>';
+    if(focus) navigation.children[index].focus();
+  }
+  navigation.addEventListener("click",event=>{
+    const tab=event.target.closest("[data-primary-index]");
+    if(tab) render(Number(tab.dataset.primaryIndex),true);
+  });
+  navigation.addEventListener("keydown",event=>{
+    const last=primaryPlans.length-1;
+    const move={ArrowLeft:selected===0?last:selected-1,ArrowRight:selected===last?0:selected+1,Home:0,End:last};
+    if(!(event.key in move)) return;
+    event.preventDefault();
+    render(move[event.key],true);
+  });
+  panel.addEventListener("click",event=>{
+    const button=event.target.closest("[data-primary-case]");
+    if(button) openFullLesson(lessons.find(lesson=>lesson.id===button.dataset.primaryCase));
+  });
+  document.getElementById("age-panel").addEventListener("click",event=>{
+    if(event.target.closest("[data-primary-entry]")) render(0);
+  });
+  document.getElementById("path-detail").addEventListener("click",event=>{
+    const link=event.target.closest("[data-primary-start]");
+    if(link) render(Number(link.dataset.primaryStart));
+  });
+  render(0);
+})();</script>
 </body></html>
