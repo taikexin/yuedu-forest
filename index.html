@@ -160,7 +160,25 @@ body{background:var(--forest-paper)}
 #classroom[data-theme=tiger] .classroom-stage .class-picture,#classroom[data-theme=butterfly] .classroom-stage .class-picture,#classroom[data-theme=body] .classroom-stage .class-picture{border-radius:26px}
 @media(max-width:800px){.hero.forest-hero{grid-template-columns:1fr 1.1fr;gap:16px}.forest-hero-illustration{border-radius:26px}.stop-caption{display:block}.stop-caption small{display:block;margin-top:2px}.stop-task h3{font-size:clamp(25px,4vw,38px)}}
 @media(max-width:580px){.hero.forest-hero{grid-template-columns:1fr;padding-block:20px 12px}.forest-hero h1{font-size:clamp(38px,11vw,57px)}.forest-hero .hero-actions{margin-top:13px}.forest-hero .hero-actions .pill{min-height:43px;font-size:14px}.forest-hero-illustration img{aspect-ratio:1.66}.forest-home{padding-bottom:17px}.forest-stops,.age-section .age-tabs{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.forest-stop img{height:clamp(75px,24vw,124px)}.stop-caption{display:flex}.stop-caption small{display:none}.age-panel[data-age]{grid-template-columns:1fr;border-radius:23px}.stop-scene{margin:8px}.stop-scene img{aspect-ratio:1.7}.stop-task{padding:14px 16px 18px}}
-@media(prefers-reduced-motion:reduce){.forest-stop{transition:none}.forest-stop:hover{transform:none}}</style>
+@media(prefers-reduced-motion:reduce){.forest-stop{transition:none}.forest-stop:hover{transform:none}}
+.forest-spot{position:absolute;left:var(--x);top:var(--y);transform:translate(-50%,-50%);display:grid;place-items:center;width:clamp(46px,5vw,65px);height:clamp(46px,5vw,65px);border:3px solid white;border-radius:50%;background:#173e2de8;color:#fff;font-weight:850;font-size:23px;box-shadow:0 3px 13px #121e29aa;cursor:pointer}
+.forest-spot.found{background:#fff48c;color:#203d2b;border-color:#276043;box-shadow:0 0 0 6px #fffbe190}
+.age-panel[data-age] .stop-scene img{aspect-ratio:1.5;object-fit:contain}
+.trial-cards,.trial-timeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+.trial-choice{background:#fffcf1;border:1px solid #513a2438;border-radius:12px;color:inherit;font-size:14px;font-weight:750;min-height:44px;padding:5px 7px;text-align:center}
+.trial-choice:hover:not(:disabled){box-shadow:inset 0 0 0 2px var(--stop-ink)}
+.trial-choice[aria-pressed=true]{background:var(--stop-ink);color:#fff;opacity:1}
+.trial-choice:disabled:not([aria-pressed=true]){opacity:.58}
+.trial-icon{display:block;font-size:22px}
+.trial-timeline{list-style:none;padding:0;margin:7px 0 0;text-align:center}
+.trial-timeline li{background:#fff8;border:1px dashed #624f397c;border-radius:8px;min-height:37px;display:grid;align-content:center;font-size:12px;font-weight:750}
+.trial-pair{display:grid;grid-template-columns:1fr 1.55fr;gap:6px}
+.trial-pair>div,.trial-lines{display:grid;gap:5px}
+.trial-lines button{text-align:left}
+.trial-feedback{background:#fff9;border-radius:9px;font-size:14px;font-weight:730;line-height:1.45;margin:8px 0 10px;padding:8px 10px;min-height:38px}
+.trial-footer{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.trial-reset{background:none;border:0;color:inherit;min-height:44px;padding:4px 9px;text-decoration:underline;text-underline-offset:3px;font-weight:750}
+.class-warmup{margin:0 0 11px;padding:7px 12px;border-radius:9px;background:var(--class-tint);font-size:14px;font-weight:750}</style>
 </head>
 <body>
 <a class="skip" href="#main">跳到主要内容</a>
@@ -381,13 +399,14 @@ const fullCourses = {
   const feedback = message => '<p class="class-feedback" role="status">' + safe(message || "") + '</p>';
   const ordinal = i => ["一","二","三","四","五","六","七","八"][i] || String(i+1);
 
-  window.openFullLesson = item => {
+  window.openFullLesson = (item, warmup = false) => {
     lesson = item;
     course = fullCourses[lesson.id];
     if (!course) return;
     lastFocus = document.activeElement;
     if (!session.has(lesson.id)) session.set(lesson.id,{index:0,done:new Set(),work:[],route:null,finished:false});
     record = session.get(lesson.id);
+    if(warmup) record.warmup=true;
     resourceKey = null;
     slideIndex = 0;
     dialog.dataset.theme = lesson.id;
@@ -456,13 +475,13 @@ const fullCourses = {
       const last = course.steps.at(-1);
       stage.innerHTML = '<div class="class-done"><p class="class-kicker">完成整节课</p><h3>' + safe(course.output) + '</h3><p>你已完成 ' + record.done.size + ' 个课堂任务。</p>' +
         (record.route===null?"":'<p>本次阅读路线 · '+safe(course.steps.find(s=>s.routes).routes[record.route][0])+'</p>') +
-        '<dl>' + (last.fields||[]).map(([label],i)=>'<div><dt>'+safe(label)+'</dt><dd>'+safe(notes[i] || "已口头表达")+'</dd></div>').join("") + '</dl>' +
-        '<div class="class-step-actions">' + button("下载学习成果","export","","primary") + button("回看最后一站","jump",course.steps.length-1) + '</div></div>';
+        '<dl>' + (last.fields||[]).map(([label],i)=>'<div><dt>'+safe(label)+'</dt><dd>'+safe(notes[i]?.trim() || (record.work.at(-1)?.oral ? "已选择口头表达" : "未填写"))+'</dd></div>').join("") + '</dl>' +
+        '<div class="class-step-actions">' + button("下载学习成果","export","","primary") + button("回看最后一站","jump",course.steps.length-1) + button("重新开始","restart") + '</div></div>';
       return;
     }
     const step = activeStep();
     const work = stepWork();
-    stage.innerHTML = '<div class="class-step-head"><p class="class-kicker">第 ' + ordinal(record.index) + ' 站 · ' + (record.index+1) + ' / ' + course.steps.length + '</p><h3>' + safe(step.title) + '</h3><p>' + safe(step.prompt) + '</p></div>' +
+    stage.innerHTML = (record.index===0 && record.warmup?'<p class="class-warmup">✓ 已完成森林试读。带着刚才的发现开始第一站。</p>':"") + '<div class="class-step-head"><p class="class-kicker">第 ' + ordinal(record.index) + ' 站 · ' + (record.index+1) + ' / ' + course.steps.length + '</p><h3>' + safe(step.title) + '</h3><p>' + safe(step.prompt) + '</p></div>' +
       renderActivity(step,work) + feedback(work.message) +
       '<div class="class-step-actions">' + (record.index>0 ? button("← 上一站","jump",record.index-1):"") + (record.done.has(record.index) ? button(record.index===course.steps.length-1?"查看学习成果":"下一站 →","advance","","primary"):"") + '</div>';
   }
@@ -486,7 +505,7 @@ const fullCourses = {
       case "evidence":
         return (step.sentences.length?'<div class="class-reading">'+step.sentences.map(x=>'<p>'+safe(x)+'</p>').join("")+'</div>':"") + '<div class="class-evidence">' + step.tokens.map((text,i)=>button(text,"evidence",i,work.picked.includes(i)?"primary":"secondary",work.picked.includes(i))).join("") + '</div><div class="class-step-actions">' + button("检查我找到的线索","check-evidence","","primary") + '</div>';
       case "compose":
-        return '<div class="class-form">' + step.fields.map(([label,placeholder],i)=>'<label><span>'+safe(label)+'</span><textarea rows="2" maxlength="160" data-class-field="'+i+'" placeholder="'+safe(placeholder)+'">'+safe(work.fields[i]||"")+'</textarea></label>').join("") + '</div><div class="class-step-actions">'+button(step.next,"finish","","primary")+'</div>';
+        return '<div class="class-form">' + step.fields.map(([label,placeholder],i)=>'<label><span>'+safe(label)+'</span><textarea rows="2" maxlength="160" data-class-field="'+i+'" placeholder="'+safe(placeholder)+'">'+safe(work.fields[i]||"")+'</textarea></label>').join("") + '</div><div class="class-step-actions">'+button(step.next,"finish","","primary")+button("我已经说给别人听了","finish-oral")+'</div>';
       case "route":
         return '<div class="class-routes">' + step.routes.map(([label,lead,detail],i)=>'<button type="button" class="class-card" data-class-action="route" data-value="'+i+'" aria-pressed="'+(record.route===i)+'"><b>'+safe(label)+'</b><span>'+safe(lead)+'</span><small>'+safe(detail)+'</small></button>').join("")+'</div>';
       default: return "";
@@ -540,6 +559,7 @@ const fullCourses = {
     if (step.kind!=="sequence" || card<0 || card>=step.cards.length || work.slots.includes(card)) return;
     if (index<0) index=step.cards.findIndex((_,i)=>work.slots[i]===undefined);
     if (index<0 || index>=step.cards.length || work.slots[index]!==undefined) return;
+    record.done.delete(record.index);
     work.slots[index]=card;
     work.message="已放入第 "+(index+1)+" 格。";
   }
@@ -566,8 +586,8 @@ const fullCourses = {
         else work.message=step.hint;
         break;
       case "slot-add": setSlot(i,-1); break;
-      case "slot-remove": delete work.slots[i]; work.message="这一格已清空，可以换一张。"; break;
-      case "reset-sequence": work.slots=[]; work.message="卡槽已清空。"; break;
+      case "slot-remove": record.done.delete(record.index); delete work.slots[i]; work.message="这一格已清空，可以换一张。"; break;
+      case "reset-sequence": record.done.delete(record.index); work.slots=[]; work.message="卡槽已清空。"; break;
       case "check-sequence":
         if(step.order.every((id,pos)=>work.slots[pos]===id)) done(work,step.success);
         else work.message=step.order.every((_,pos)=>work.slots[pos]!==undefined) ? step.hint : "还有空格。把所有卡片放好后再检查。";
@@ -582,7 +602,7 @@ const fullCourses = {
           if(Object.keys(work.paired).length===step.pairs.length)done(work,step.success);
         } else work.message=step.hint;
         break;
-      case "evidence": work.picked=work.picked.includes(i)?work.picked.filter(v=>v!==i):[...work.picked,i]; work.message="已选 "+work.picked.length+" 项。"; break;
+      case "evidence": record.done.delete(record.index); work.picked=work.picked.includes(i)?work.picked.filter(v=>v!==i):[...work.picked,i]; work.message="已选 "+work.picked.length+" 项。"; break;
       case "check-evidence":
         if(work.picked.length===step.answer.length && step.answer.every(v=>work.picked.includes(v))) done(work,step.success);
         else work.message=step.hint;
@@ -593,7 +613,13 @@ const fullCourses = {
           record.done = new Set([...record.done].filter(index => index <= record.index));
         }
         record.route=i; done(work,"已选择「"+step.routes[i][0]+"」。");nextStep();return;
-      case "finish": done(work,"你已完成课堂表达。");nextStep();return;
+      case "finish":
+        if(!work.fields.some(value=>value?.trim())) {
+          work.message="写下一条发现，或在说给身边的人听后选择「我已经说给别人听了」。";
+          break;
+        }
+        work.oral=false;done(work,"你的发现已记录。");nextStep();return;
+      case "finish-oral": work.oral=true;done(work,"你已选择口头表达。");nextStep();return;
       default: return;
     }
     renderPractice();
@@ -618,6 +644,11 @@ const fullCourses = {
     if (action==="mode") {showMode(value);modes.querySelector('[data-value="'+value+'"]').focus();return;}
     if (action==="jump") {record.index=Number(value);record.finished=false;renderPractice();stage.scrollTop=0;return;}
     if (action==="advance"){nextStep();return;}
+    if (action==="restart"){
+      record={index:0,done:new Set(),work:[],route:null,finished:false};
+      session.set(lesson.id,record);
+      renderPractice();stage.scrollTop=0;return;
+    }
     if (action==="material") {resourceKey=value;slideIndex=0;renderResources();document.getElementById("class-material-content")?.scrollIntoView({block:"start"});return;}
     if (action==="slide") {slideIndex+=Number(value);renderResources();resources.querySelector(".class-deck-nav")?.scrollIntoView({block:"start"});return;}
     if (action==="pdf" || action==="download-pdf") {
@@ -627,7 +658,7 @@ const fullCourses = {
     }
     if(action==="export"){
       const last=course.steps.at(-1), fields=record.work.at(-1)?.fields||[];
-      const content=[lesson.title,course.output,...last.fields.map(([label],i)=>label+"："+(fields[i]||"已口头表达"))].join("\n");
+      const content=[lesson.title,course.output,...last.fields.map(([label],i)=>label+"："+(fields[i]?.trim()||(record.work.at(-1)?.oral?"已选择口头表达":"未填写")))].join("\n");
       saveFile(new Blob(["\ufeff",content],{type:"text/plain;charset=utf-8"}),lesson.title+"-学习成果.txt");
       return;
     }
@@ -691,22 +722,113 @@ function renderAge(index, focus = false) {
   panel.style.setProperty("--stop-ink",stop.ink);
   panel.setAttribute("aria-labelledby","age-tab-"+index);
   panel.innerHTML = '<div class="stop-scene"><img src="'+window.classroomImages[stop.image]+'" alt="'+stop.alt+'" width="768" height="512">'+
-    '<span class="scene-name"><span aria-hidden="true">'+stop.icon+'</span>'+stop.name+'</span></div>'+
+    '<span class="scene-name"><span aria-hidden="true">'+stop.icon+'</span>'+stop.name+'</span>'+
+    (index===0?[[22,70,"左下方"],[52,42,"脸上"],[66,56,"嘴巴旁"]].map(([x,y,label],i)=>'<button type="button" class="forest-spot" style="--x:'+x+'%;--y:'+y+'%" data-trial-action="spot" data-trial-index="'+i+'" aria-label="观察点 '+(i+1)+'，'+label+'">'+(i+1)+'</button>').join(""):"")+'</div>'+
     '<div class="stop-task"><p class="stop-book">'+age.task+'</p><h3>'+stop.task+'</h3><p class="stop-invite">'+stop.opener+'</p>'+
-    '<button type="button" class="pill stop-action" id="age-experience">'+stop.action+' <span aria-hidden="true">↗</span></button>'+
+    '<div id="forest-trial"></div><p id="forest-trial-feedback" class="trial-feedback" role="status"></p><div class="trial-footer"><button type="button" class="pill stop-action" id="age-experience">进入完整课堂 <span aria-hidden="true">↗</span></button><button type="button" class="trial-reset" id="forest-trial-reset" data-trial-action="reset" hidden>再玩一次</button></div>'+
     (age.age===6?'<a class="primary-entry" href="#primary-path" data-primary-entry>看 6 岁幼小衔接及后续课程 ↓</a>':'')+
     '<details class="stop-grownups"><summary>给大人的共读指南</summary><div class="stop-guide">'+markup(age.details)+'</div></details></div>';
-  $("age-experience").addEventListener("click",()=>openLesson(lessons.find(lesson=>lesson.id===age.caseId)));
+  renderForestTrial(index);
+  $("age-experience").addEventListener("click",()=>window.openFullLesson(lessons.find(lesson=>lesson.id===age.caseId),forestTrialState[index].solved));
   if(focus) $("age-tab-"+index).focus();
 }
 
 function initForestEntry() {
+  $("age-panel").addEventListener("click",event=>{
+    const control=event.target.closest("[data-trial-action]");
+    if(control) runForestTrial(activeAge,control.dataset.trialAction,Number(control.dataset.trialIndex));
+  });
   const map = $("forest-home-stops");
   map.innerHTML=forestStops.map((stop,i)=>forestStopCard(stop,i,false)).join("");
   map.addEventListener("click",event=>{
     const marker=event.target.closest("[data-forest-jump]");
     if(marker) renderAge(Number(marker.dataset.forestJump),true);
   });
+}
+const forestTrialState = forestStops.map(()=>({choices:[],match:{},selected:null,solved:false,message:""}));
+const butterflyStages = [["🦋","蝴蝶"],["🐛","毛毛虫"],["🥚","卵"],["🟤","蛹"]];
+const bodyWords = ["心脏","肺"];
+const bodyActions = ["吸气、呼气","感受胸口的跳动"];
+const mountainLines = ["小雨要给大家讲故事。","她捏着书角，有点害怕。","她深吸一口气，站起来讲完了故事。"];
+
+function trialButton(action,index,label,pressed=false,disabled=false) {
+  return '<button type="button" class="trial-choice" data-trial-action="'+action+'" data-trial-index="'+index+'" aria-pressed="'+pressed+'"'+(disabled?' disabled':'')+'>'+label+'</button>';
+}
+
+function renderForestTrial(index) {
+  const state=forestTrialState[index];
+  const target=$("forest-trial");
+  if(!target) return;
+  const focus=document.activeElement?.dataset;
+  if(index===0) {
+    target.innerHTML='<div class="trial-controls"><button type="button" class="trial-choice" data-trial-action="listen">听小狐狸说</button></div>';
+  } else if(index===1) {
+    target.innerHTML='<div class="trial-cards">'+butterflyStages.map(([icon,label],i)=>trialButton("butterfly",i,'<span class="trial-icon" aria-hidden="true">'+icon+'</span>'+label,state.choices.includes(i),state.choices.includes(i))).join("")+'</div>'+
+      '<ol class="trial-timeline" aria-label="生命顺序">'+butterflyStages.map((_,i)=>'<li>'+(state.choices[i]===undefined ? (i+1) : '<span aria-hidden="true">'+butterflyStages[state.choices[i]][0]+'</span> '+butterflyStages[state.choices[i]][1])+'</li>').join("")+'</ol>';
+  } else if(index===2) {
+    target.innerHTML='<div class="trial-pair"><div aria-label="身体词">'+bodyWords.map((word,i)=>trialButton("body-word",i,word+(state.match[i]===undefined?'':' ✓'),state.selected===i,state.match[i]!==undefined)).join("")+'</div><div aria-label="身体动作">'+bodyActions.map((action,i)=>trialButton("body-action",i,action,Object.values(state.match).includes(i),Object.values(state.match).includes(i))).join("")+'</div></div>';
+  } else {
+    target.innerHTML='<div class="trial-lines">'+mountainLines.map((line,i)=>trialButton("mountain",i,line,state.selected===i)).join("")+'</div>';
+  }
+  $("forest-trial-feedback").textContent=state.message || ["点一处带号码的位置。","从最小的样子开始，按顺序点四张卡。","先点一个身体词，再点它对应的动作。","点出小雨后来做了什么的那一句。"][index];
+  const replay=$("forest-trial-reset");
+  replay.hidden=!state.solved && !state.choices.length && !Object.keys(state.match).length;
+  if(focus?.trialAction && focus.trialAction!=="spot") {
+    const previous=target.querySelector?.('[data-trial-action="'+focus.trialAction+'"][data-trial-index="'+focus.trialIndex+'"]:not(:disabled)');
+    const next=previous || target.querySelector?.("button:not(:disabled)") || replay;
+    if(!next.hidden) next.focus({preventScroll:true});
+  }
+  if(index===0) {
+    const scene=$("age-panel").querySelector?.(".stop-scene");
+    scene?.querySelectorAll(".forest-spot").forEach(button=>button.classList.toggle("found",state.solved && button.dataset.trialIndex==="0"));
+  }
+  $("age-experience").firstChild.textContent=state.solved?"带着发现继续上课 ":"进入完整课堂 ";
+}
+
+function runForestTrial(index,action,choice) {
+  const state=forestTrialState[index];
+  if(action==="listen") {
+    if(window.speechSynthesis && window.SpeechSynthesisUtterance) {
+      const prompt=new SpeechSynthesisUtterance("小老虎身上有几条弯弯的深色线。你找得到吗？");
+      prompt.lang="zh-CN";
+      prompt.rate=.84;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(prompt);
+    }
+    if(!state.solved) state.message="找找小老虎身上弯弯的深色线。";
+  } else if(action==="reset") {
+    forestTrialState[index]={choices:[],match:{},selected:null,solved:false,message:""};
+  } else if(action==="spot") {
+    if(choice===0) {state.solved=true;state.message="找到了！这是深色的条纹。用手指比画一条弯弯的线吧。";}
+    else if(!state.solved) state.message=choice===1?"这里是眼睛。看看眼睛旁边，还有什么深色的线？":"这里是鼻子。再看看老虎脸旁或腿上的深色线。";
+  } else if(action==="butterfly" && !state.solved) {
+    const correct=[2,1,3,0][state.choices.length];
+    if(choice===correct) {
+      state.choices.push(choice);
+      state.solved=state.choices.length===4;
+      state.message=state.solved?"排好了！卵 → 毛毛虫 → 蛹 → 蝴蝶。指着卡片讲一遍吧。":"这张放对啦。接下来会变成什么？";
+    } else state.message=["先找很小、圆圆的卵。","小家伙从卵里出来，会爬、会吃叶子。","毛毛虫变蝴蝶以前，要先待在蛹里。","最后，它展开了翅膀。"][state.choices.length];
+  } else if(action==="body-word") {
+    state.selected=choice;
+    state.message="选了「"+bodyWords[choice]+"」。它和哪个动作有关？";
+  } else if(action==="body-action") {
+    if(state.selected===null) state.message="先点左边的一个身体词。";
+    else if(choice===1-state.selected) {
+      state.match[state.selected]=choice;
+      state.selected=null;
+      state.solved=Object.keys(state.match).length===2;
+      state.message=state.solved?"两组都配上了！做一次深呼吸，再摸摸胸口。":"配对成功！再找另一组。";
+    } else state.message="再想想。呼吸时用到肺，胸口一下一下跳动的是心脏。";
+  } else if(action==="mountain") {
+    state.selected=choice;
+    state.solved=choice===2;
+    state.message=state.solved?"这句写出了小雨真的站起来讲了故事。试着说：我觉得她勇敢，因为……":choice===1?"这句告诉我们她害怕。再找一句说她后来做了什么。":"这是故事的开头。读一读后面两句。";
+  }
+  renderForestTrial(index);
+  if(action==="reset") {
+    const first=$("age-panel").querySelector?.(".forest-spot, #forest-trial button");
+    first?.focus({preventScroll:true});
+  }
 }
 $("age-tabs").addEventListener("click", (event) => {
   const target = event.target.closest("[data-age]");
